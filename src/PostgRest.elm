@@ -1447,7 +1447,7 @@ readPage from { select, where_, size, page, order } =
         handleResponse response =
             let
                 countResult =
-                    Dict.get "Content-Range" response.headers
+                    Dict.get "content-range" response.headers
                         |> Maybe.andThen (String.split "/" >> List.reverse >> List.head)
                         |> Result.fromMaybe "Invalid Content-Range Header"
                         |> Result.andThen String.toInt
