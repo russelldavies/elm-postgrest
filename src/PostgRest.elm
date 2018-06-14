@@ -1542,7 +1542,7 @@ embedMany getRelationship (Schema schemaName attributes2) { select, where_, orde
 
                 parameters =
                     Parameters
-                        { schemaName = schemaName ++ "." ++ fkOrThrough
+                        { schemaName = fkOrThrough
                         , attributeNames = attributeNames
                         , cardinality = cardinality
                         }
