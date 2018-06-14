@@ -14,6 +14,7 @@ module PostgRest
         , Schema
         , Selection
         , all
+        , andField
         , andMap
         , any
         , asc
@@ -697,8 +698,8 @@ hasNullable =
 
 {-| -}
 schema : String -> attributes -> Schema id attributes
-schema name s =
-    Schema name s
+schema name attrs =
+    Schema name attrs
 
 
 {-| -}
@@ -1698,6 +1699,10 @@ map8 fn selectionA selectionB selectionC selectionD selectionE selectionF select
         |> andMap selectionF
         |> andMap selectionG
         |> andMap selectionH
+
+
+andField accessor =
+    andMap (field accessor)
 
 
 toHttpRequest : { timeout : Maybe Time.Time, token : Maybe String, url : String } -> Request a -> Http.Request a
