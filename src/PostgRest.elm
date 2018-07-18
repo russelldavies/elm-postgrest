@@ -29,6 +29,7 @@ module PostgRest
         , deleteOne
         , desc
         , embedMany
+        , embedNullable
         , embedOne
         , eq
         , false
@@ -1506,6 +1507,35 @@ embedOne getRelationship (Schema schemaName attributes2) (Selection getSelection
             { attributeNames = []
             , embeds = [ parameters ]
             , decoder = Decode.field fk decoder
+            }
+
+
+embedNullable :
+    (attributes1 -> Relationship HasNullable id)
+    -> Schema id attributes2
+    -> Selection attributes2 a
+    -> Selection attributes1 (Maybe a)
+embedNullable getRelationship (Schema schemaName attributes2) (Selection getSelection) =
+    Selection <|
+        \attributes1 ->
+            let
+                (Relationship fk) =
+                    getRelationship attributes1
+
+                { attributeNames, embeds, decoder } =
+                    getSelection attributes2
+
+                parameters =
+                    Parameters
+                        { schemaName = fk
+                        , attributeNames = attributeNames
+                        , cardinality = One Nothing
+                        }
+                        embeds
+            in
+            { attributeNames = []
+            , embeds = [ parameters ]
+            , decoder = Decode.nullable (Decode.field fk decoder)
             }
 
 
