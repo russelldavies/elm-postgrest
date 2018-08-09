@@ -515,7 +515,7 @@ int name =
         { name = name
         , decoder = Decode.int
         , encoder = Encode.int
-        , toString = String.fromInt
+        , toString = toString
         }
 
 
@@ -537,7 +537,7 @@ float name =
         { name = name
         , decoder = Decode.float
         , encoder = Encode.float
-        , toString = String.fromFloat
+        , toString = toString
         }
 
 
@@ -552,7 +552,6 @@ bool name =
             \b ->
                 if b then
                     "true"
-
                 else
                     "false"
         }
@@ -1052,14 +1051,11 @@ all : List (Condition attributes) -> Condition attributes
 all conds =
     if List.isEmpty conds then
         CBoolean True
-
     else if List.any isFalseCond conds then
         CBoolean False
-
     else if List.all isTrueCond conds then
         -- NOTE: added this case to avoid and()
         CBoolean True
-
     else
         CCombine
             { negated = False
@@ -1074,14 +1070,11 @@ any : List (Condition attributes) -> Condition attributes
 any conds =
     if List.isEmpty conds then
         CBoolean False
-
     else if List.any isTrueCond conds then
         CBoolean True
-
     else if List.all isFalseCond conds then
         -- NOTE: added this case to avoid or()
         CBoolean False
-
     else
         CCombine
             { negated = False
@@ -1212,7 +1205,7 @@ createMany (Schema name attributes) options =
             options.change
                 |> List.map (\(Changeset toKeyValuePairs) -> toKeyValuePairs attributes)
                 |> List.map Encode.object
-                |> Encode.list identity
+                |> Encode.list
 
         (Selection getSelection) =
             options.select
@@ -1367,14 +1360,13 @@ readPage (Schema schemaName attributes) options =
         handleResponse response =
             let
                 countResult =
-                    Dict.get "Content-Range" response.headers
+                    Dict.get "content-range" response.headers
                         |> Maybe.andThen (String.split "/" >> List.reverse >> List.head)
-                        |> Maybe.andThen String.toInt
+                        |> Maybe.andThen (String.toInt >> Result.toMaybe)
                         |> Result.fromMaybe "Invalid Content-Range Header"
 
                 jsonResult =
                     Decode.decodeString (Decode.list decoder) response.body
-                        |> Result.mapError Decode.errorToString
             in
             Result.map2 (\data count -> { data = data, count = count })
                 jsonResult
@@ -1963,7 +1955,6 @@ conditionToQueryParameter embedPath condition =
                     String.concat
                         [ if negated then
                             "not."
-
                           else
                             ""
                         , operatorToString operator
@@ -1986,7 +1977,6 @@ conditionToQueryParameter embedPath condition =
                 negatedQueryKey =
                     if negated then
                         "not." ++ queryKey
-
                     else
                         queryKey
 
@@ -2007,7 +1997,7 @@ limitToQueryParameter embedPath limit =
                 |> String.join "."
 
         queryValue =
-            String.fromInt limit
+            toString limit
     in
     Builder.string queryKey queryValue
 
@@ -2021,7 +2011,7 @@ offsetToQueryParameter embedPath offset =
                 |> String.join "."
 
         queryValue =
-            String.fromInt offset
+            toString offset
     in
     Builder.string queryKey queryValue
 
@@ -2035,7 +2025,6 @@ conditionToString condition =
                 , "."
                 , if negated then
                     "not."
-
                   else
                     ""
                 , operatorToString operator
@@ -2047,7 +2036,6 @@ conditionToString condition =
             String.concat
                 [ if negated then
                     "not."
-
                   else
                     ""
                 , binaryLogicalOperatorToString operator
