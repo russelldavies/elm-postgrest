@@ -14,6 +14,7 @@ module PostgRest
         , Schema
         , Selection
         , all
+        , andField
         , andMap
         , any
         , asc
@@ -677,6 +678,10 @@ map2 fn (Selection getSelectionA) (Selection getSelectionB) =
 andMap : Selection attributes a -> Selection attributes (a -> b) -> Selection attributes b
 andMap =
     map2 (|>)
+
+
+andField accessor =
+    andMap (field accessor)
 
 
 {-| -}
