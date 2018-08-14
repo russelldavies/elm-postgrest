@@ -43,6 +43,7 @@ module PostgRest
         , int
         , is
         , like
+        , list
         , lt
         , lte
         , map
@@ -555,6 +556,16 @@ bool name =
                     "true"
                 else
                     "false"
+        }
+
+
+list : Attribute a -> Attribute (List a)
+list (Attribute { name, decoder, encoder, toString }) =
+    Attribute
+        { name = name
+        , decoder = Decode.list decoder
+        , encoder = \listOfA -> Encode.list (List.map encoder listOfA)
+        , toString = \listOfA -> "{" ++ String.join "," (List.map toString listOfA) ++ "}"
         }
 
 
