@@ -14,6 +14,7 @@ module PostgRest
         , Schema
         , Selection
         , all
+        , andMap
         , any
         , asc
         , attribute
