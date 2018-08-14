@@ -1686,7 +1686,7 @@ embedToSelectString ( disambiguateName, Parameters { schemaName, attributeNames,
                     disambiguateName
 
                 Many _ ->
-                    schemaName ++ "." ++ disambiguateName
+                    disambiguateName
     in
     String.concat
         [ name
