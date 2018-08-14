@@ -847,7 +847,7 @@ embedNullable getRelationship (Schema schemaName attributes2) (Selection getSele
             in
             { attributeNames = []
             , embeds = [ ( fkName, parameters ) ]
-            , decoder = Decode.nullable (Decode.field fkName decoder)
+            , decoder = Decode.field fkName (Decode.nullable decoder)
             }
 
 
